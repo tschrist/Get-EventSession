@@ -439,7 +439,7 @@ param(
     [parameter( Mandatory = $true, ParameterSetName = 'Default')]
     [parameter( Mandatory = $true, ParameterSetName = 'Info')]
     [parameter( Mandatory = $true, ParameterSetName = 'DownloadDirect')]
-    [ValidateSet('Ignite', 'Inspire','Build','Build2020','Inspire2020','Ignite2019','Ignite2018')]
+    [ValidateSet('Ignite2016','Ignite2017','Ignite2018','Ignite2019','Ignite2020', 'Inspire2017','Inspire2018','Inspire2019','Inspire2020','Build2016','Build2017','Build2018','Build2019','Build2020')]
     [string]$Event='',
 
     [parameter( Mandatory = $true, ParameterSetName = 'Info')]
@@ -754,41 +754,134 @@ param(
 
     # Determine what event URLs to use
     Switch( $Event) {
-        {'Ignite','Ignite2019' -contains $_} {
+        {'Ignite2016' -contains $_} {
             $EventAPIUrl= 'https://api-myignite.techcommunity.microsoft.com'
             $EventSearchURI= 'api/session/search'
-            $SessionUrl= 'https://medius.studios.ms/Embed/Video/IG19-{0}'
-            $CaptionURL= 'https://medius.studios.ms/video/asset/CAPTION/IG19-{0}'
-            $SlidedeckUrl= 'https://mediusprodstatic.studios.ms/presentations/Ignite2019/{0}.pptx'
+            $SessionUrl= 'https://medius.studios.ms/Embed/Video/IG16-{0}'
+            $CaptionURL= 'https://medius.studios.ms/video/asset/CAPTION/IG16-{0}'
+            $SlidedeckUrl= 'https://mediusprodstatic.studios.ms/presentations/Ignite2016/{0}.pptx'
             $Method= 'Post'
             # Note: to have literal accolades and not string formatter evaluate interior, use a pair:
             $EventSearchBody = '{{"itemsPerPage":{0},"searchText":"*","searchPage":{1},"sortOption":"None","searchFacets":{{"facets":[],"personalizationFacets":[]}}}}'
         }
-        'Ignite2018' {
+		{'Ignite2017' -contains $_} {
             $EventAPIUrl= 'https://api-myignite.techcommunity.microsoft.com'
-            $EventSearchURI= 'api/videos/search'
+            $EventSearchURI= 'api/session/search'
+            $SessionUrl= 'https://medius.studios.ms/Embed/Video/IG17-{0}'
+            $CaptionURL= 'https://medius.studios.ms/video/asset/CAPTION/IG17-{0}'
+            $SlidedeckUrl= 'https://mediusprodstatic.studios.ms/presentations/Ignite2017/{0}.pptx'
+            $Method= 'Post'
+            # Note: to have literal accolades and not string formatter evaluate interior, use a pair:
+            $EventSearchBody = '{{"itemsPerPage":{0},"searchText":"*","searchPage":{1},"sortOption":"None","searchFacets":{{"facets":[],"personalizationFacets":[]}}}}'
+        }
+		{'Ignite2018' -contains $_} {
+            $EventAPIUrl= 'https://api-myignite.techcommunity.microsoft.com'
+            $EventSearchURI= 'api/session/search'
             $SessionUrl= 'https://medius.studios.ms/Embed/Video/IG18-{0}'
             $CaptionURL= 'https://medius.studios.ms/video/asset/CAPTION/IG18-{0}'
             $SlidedeckUrl= 'https://mediusprodstatic.studios.ms/presentations/Ignite2018/{0}.pptx'
             $Method= 'Post'
             # Note: to have literal accolades and not string formatter evaluate interior, use a pair:
+            $EventSearchBody = '{{"itemsPerPage":{0},"searchText":"*","searchPage":{1},"sortOption":"None","searchFacets":{{"facets":[],"personalizationFacets":[]}}}}'
+        }
+        {'Ignite2019' -contains $_} {
+            $EventAPIUrl= 'https://api-myignite.techcommunity.microsoft.com'
+            $EventSearchURI= 'api/videos/search'
+            $SessionUrl= 'https://medius.studios.ms/Embed/Video/IG19-{0}'
+            $CaptionURL= 'https://medius.studios.ms/video/asset/CAPTION/IG19-{0}'
+            $SlidedeckUrl= 'https://mediusprodstatic.studios.ms/presentations/Ignite2019/{0}.pptx'
+            $Method= 'Post'
+            # Note: to have literal accolades and not string formatter evaluate interior, use a pair:
             $EventSearchBody = '{{"itemsPerPage":{0},"searchText":"*","searchPage":{1},"sortOption":"None","searchFacets":{{"facets":[],"personalizationFacets":[],"dateFacet":[{{"startDateTime":"2018-01-01T08:00:00-05:00","endDateTime":"2019-01-01T19:00:00-05:00"}}]}}'
         }
-        {'Inspire', 'Inspire2020' -contains $_} {
+		{'Ignite2020' -contains $_} {
+            $EventAPIUrl= 'https://api-myignite.techcommunity.microsoft.com'
+            $EventSearchURI= 'api/videos/search'
+            $SessionUrl= 'https://medius.studios.ms/Embed/Video/IG20-{0}'
+            $CaptionURL= 'https://medius.studios.ms/video/asset/CAPTION/IG20-{0}'
+            $SlidedeckUrl= 'https://mediusprodstatic.studios.ms/presentations/Ignite2020/{0}.pptx'
+            $Method= 'Post'
+            # Note: to have literal accolades and not string formatter evaluate interior, use a pair:
+            $EventSearchBody = '{{"itemsPerPage":{0},"searchText":"*","searchPage":{1},"sortOption":"None","searchFacets":{{"facets":[],"personalizationFacets":[],"dateFacet":[{{"startDateTime":"2018-01-01T08:00:00-05:00","endDateTime":"2019-01-01T19:00:00-05:00"}}]}}'
+        }
+        {'Inspire2017' -contains $_} {
+            $EventAPIUrl= 'https://api.myinspire.microsoft.com'
+            $EventSearchURI= 'api/session/search'
+            $SessionUrl= 'https://medius.studios.ms/video/asset/HIGHMP4/INSP17-{0}'
+            $CaptionURL= 'https://medius.studios.ms/video/asset/CAPTION/INSP17-{0}'
+            $SlidedeckUrl= 'https://mediusprodstatic.studios.ms/presentations/Inspire2017/{0}.pptx'
+            $Method= 'Post'
+            $EventSearchBody = '{{"itemsPerPage":{0},"searchText":"*","searchPage":{1},"sortOption":"None","searchFacets":{{"facets":[],"personalizationFacets":[]}}}}'
+        }
+		{'Inspire2018' -contains $_} {
+            $EventAPIUrl= 'https://api.myinspire.microsoft.com'
+            $EventSearchURI= 'api/session/search'
+            $SessionUrl= 'https://medius.studios.ms/video/asset/HIGHMP4/INSP18-{0}'
+            $CaptionURL= 'https://medius.studios.ms/video/asset/CAPTION/INSP18-{0}'
+            $SlidedeckUrl= 'https://mediusprodstatic.studios.ms/presentations/Inspire2018/{0}.pptx'
+            $Method= 'Post'
+            $EventSearchBody = '{{"itemsPerPage":{0},"searchText":"*","searchPage":{1},"sortOption":"None","searchFacets":{{"facets":[],"personalizationFacets":[]}}}}'
+        }
+		{'Inspire2019' -contains $_} {
+            $EventAPIUrl= 'https://api.myinspire.microsoft.com'
+            $EventSearchURI= 'api/session/search'
+            $SessionUrl= 'https://medius.studios.ms/video/asset/HIGHMP4/INSP19-{0}'
+            $CaptionURL= 'https://medius.studios.ms/video/asset/CAPTION/INSP19-{0}'
+            $SlidedeckUrl= 'https://mediusprodstatic.studios.ms/presentations/Inspire2019/{0}.pptx'
+            $Method= 'Post'
+            $EventSearchBody = '{{"itemsPerPage":{0},"searchText":"*","searchPage":{1},"sortOption":"None","searchFacets":{{"facets":[],"personalizationFacets":[]}}}}'
+        }
+		{'Inspire2020' -contains $_} {
             $EventAPIUrl= 'https://api.myinspire.microsoft.com'
             $EventSearchURI= 'api/session/search'
             $SessionUrl= 'https://medius.studios.ms/video/asset/HIGHMP4/INSP20-{0}'
             $CaptionURL= 'https://medius.studios.ms/video/asset/CAPTION/INSP20-{0}'
-            $SlidedeckUrl= ''
+            $SlidedeckUrl= 'https://mediusprodstatic.studios.ms/presentations/Inspire2020/{0}.pptx'
             $Method= 'Post'
             $EventSearchBody = '{{"itemsPerPage":{0},"searchText":"*","searchPage":{1},"sortOption":"None","searchFacets":{{"facets":[],"personalizationFacets":[]}}}}'
         }
-        {'Build', 'Build2020' -contains $_} {
+        {'Build2016' -contains $_} {
+            $EventAPIUrl= 'https://api.mybuild.microsoft.com'
+            $EventSearchURI= 'api/session/search'
+            $SessionUrl= 'https://medius.studios.ms/video/asset/HIGHMP4/B16-{0}'
+            $CaptionURL= 'https://medius.studios.ms/video/asset/CAPTION/B16-{0}'
+            $SlidedeckUrl= 'https://mediusprodstatic.studios.ms/presentations/Build2016/{0}.pptx'
+            $Method= 'Post'
+            $EventSearchBody = '{{"itemsPerPage":{0},"searchText":"*","searchPage":{1},"sortOption":"None","searchFacets":{{"facets":[],"personalizationFacets":[]}}}}'
+        }
+		{'Build2017' -contains $_} {
+            $EventAPIUrl= 'https://api.mybuild.microsoft.com'
+            $EventSearchURI= 'api/session/search'
+            $SessionUrl= 'https://medius.studios.ms/video/asset/HIGHMP4/B17-{0}'
+            $CaptionURL= 'https://medius.studios.ms/video/asset/CAPTION/B17-{0}'
+            $SlidedeckUrl= 'https://mediusprodstatic.studios.ms/presentations/Build2017/{0}.pptx'
+            $Method= 'Post'
+            $EventSearchBody = '{{"itemsPerPage":{0},"searchText":"*","searchPage":{1},"sortOption":"None","searchFacets":{{"facets":[],"personalizationFacets":[]}}}}'
+        }
+		{'Build2018' -contains $_} {
+            $EventAPIUrl= 'https://api.mybuild.microsoft.com'
+            $EventSearchURI= 'api/session/search'
+            $SessionUrl= 'https://medius.studios.ms/video/asset/HIGHMP4/B18-{0}'
+            $CaptionURL= 'https://medius.studios.ms/video/asset/CAPTION/B18-{0}'
+            $SlidedeckUrl= 'https://mediusprodstatic.studios.ms/presentations/Build2018/{0}.pptx'
+            $Method= 'Post'
+            $EventSearchBody = '{{"itemsPerPage":{0},"searchText":"*","searchPage":{1},"sortOption":"None","searchFacets":{{"facets":[],"personalizationFacets":[]}}}}'
+        }
+		{'Build2019' -contains $_} {
+            $EventAPIUrl= 'https://api.mybuild.microsoft.com'
+            $EventSearchURI= 'api/session/search'
+            $SessionUrl= 'https://medius.studios.ms/video/asset/HIGHMP4/B19-{0}'
+            $CaptionURL= 'https://medius.studios.ms/video/asset/CAPTION/B19-{0}'
+            $SlidedeckUrl= 'https://mediusprodstatic.studios.ms/presentations/Build2019/{0}.pptx'
+            $Method= 'Post'
+            $EventSearchBody = '{{"itemsPerPage":{0},"searchText":"*","searchPage":{1},"sortOption":"None","searchFacets":{{"facets":[],"personalizationFacets":[]}}}}'
+        }
+		{'Build2020' -contains $_} {
             $EventAPIUrl= 'https://api.mybuild.microsoft.com'
             $EventSearchURI= 'api/session/search'
             $SessionUrl= 'https://medius.studios.ms/video/asset/HIGHMP4/B20-{0}'
             $CaptionURL= 'https://medius.studios.ms/video/asset/CAPTION/B20-{0}'
-            $SlidedeckUrl= ''
+            $SlidedeckUrl= 'https://mediusprodstatic.studios.ms/presentations/Build2020/{0}.pptx'
             $Method= 'Post'
             $EventSearchBody = '{{"itemsPerPage":{0},"searchText":"*","searchPage":{1},"sortOption":"None","searchFacets":{{"facets":[],"personalizationFacets":[]}}}}'
         }
