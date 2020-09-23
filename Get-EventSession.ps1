@@ -23,7 +23,7 @@
     THIS CODE IS MADE AVAILABLE AS IS, WITHOUT WARRANTY OF ANY KIND. THE ENTIRE
     RISK OF THE USE OR THE RESULTS FROM THE USE OF THIS CODE REMAINS WITH THE USER.
 
-    Version 3.39, July 28th, 2020
+    Version 3.40, September 22th, 2020
 
     .DESCRIPTION
     This script can download Microsoft Ignite, Inspire and Build session information and available 
@@ -327,6 +327,9 @@
           Modified Keyword and Title parameters (can be multiple values now)
     3.38  Added detection of filetype for presentations (PPTX/PDF)
     3.39  Added code to deal with specifying <Event><Year>
+	3.40  Modified API endpoint for Ignite 2020
+          Changed yearless Event specification to add year suffix, eg Ignite->Ignite2020, etc.
+          Fixed Azure Media Services video scraping for Ignite2020
 
     .EXAMPLE
     Download all available contents of Ignite sessions containing the word 'Teams' in the title to D:\Ignite, and skip sessions from the CommunityTopic 'Fun and Wellness'
@@ -439,7 +442,7 @@ param(
     [parameter( Mandatory = $true, ParameterSetName = 'Default')]
     [parameter( Mandatory = $true, ParameterSetName = 'Info')]
     [parameter( Mandatory = $true, ParameterSetName = 'DownloadDirect')]
-    [ValidateSet('Ignite2016','Ignite2017','Ignite2018','Ignite2019','Ignite2020', 'Inspire2017','Inspire2018','Inspire2019','Inspire2020','Build2016','Build2017','Build2018','Build2019','Build2020')]
+    [ValidateSet('Ignite2016','Ignite2017','Ignite2018','Ignite2019','Ignite2020','Inspire2016','Inspire2017','Inspire2018','Inspire2019','Inspire2020','Build2016','Build2017','Build2018','Build2019','Build2020')]
     [string]$Event='',
 
     [parameter( Mandatory = $true, ParameterSetName = 'Info')]
@@ -797,14 +800,23 @@ param(
 		{'Ignite2020' -contains $_} {
             $EventAPIUrl= 'https://api-myignite.techcommunity.microsoft.com'
             $EventSearchURI= 'api/videos/search'
-            $SessionUrl= 'https://medius.studios.ms/Embed/Video/IG20-{0}'
+            $SessionUrl= 'https://medius.studios.ms/Embed/video-nc/IG20-{0}?mhid=myignite'
             $CaptionURL= 'https://medius.studios.ms/video/asset/CAPTION/IG20-{0}'
             $SlidedeckUrl= 'https://mediusprodstatic.studios.ms/presentations/Ignite2020/{0}.pptx'
             $Method= 'Post'
             # Note: to have literal accolades and not string formatter evaluate interior, use a pair:
             $EventSearchBody = '{{"itemsPerPage":{0},"searchText":"*","searchPage":{1},"sortOption":"None","searchFacets":{{"facets":[],"personalizationFacets":[],"dateFacet":[{{"startDateTime":"2018-01-01T08:00:00-05:00","endDateTime":"2019-01-01T19:00:00-05:00"}}]}}'
         }
-        {'Inspire2017' -contains $_} {
+        {'Inspire2016' -contains $_} {
+            $EventAPIUrl= 'https://api.myinspire.microsoft.com'
+            $EventSearchURI= 'api/session/search'
+            $SessionUrl= 'https://medius.studios.ms/video/asset/HIGHMP4/INSP16-{0}'
+            $CaptionURL= 'https://medius.studios.ms/video/asset/CAPTION/INSP16-{0}'
+            $SlidedeckUrl= 'https://mediusprodstatic.studios.ms/presentations/Inspire2016/{0}.pptx'
+            $Method= 'Post'
+            $EventSearchBody = '{{"itemsPerPage":{0},"searchText":"*","searchPage":{1},"sortOption":"None","searchFacets":{{"facets":[],"personalizationFacets":[]}}}}'
+        }
+		{'Inspire2017' -contains $_} {
             $EventAPIUrl= 'https://api.myinspire.microsoft.com'
             $EventSearchURI= 'api/session/search'
             $SessionUrl= 'https://medius.studios.ms/video/asset/HIGHMP4/INSP17-{0}'
@@ -1219,7 +1231,7 @@ param(
                                 $OnDemandPage= $DownloadedPage.RawContent 
                                 
                                 # Check for embedded AMS 
-                                If( $OnDemandPage -match '<video id="azuremediaplayer" class=".*?" data-id="(?<AzureStreamURL>.*?)"><\/video>') {
+                                If( $OnDemandPage -match '<video (playsinline)? id="azuremediaplayer" class=".*?" data-id="(?<AzureStreamURL>.*?)"><\/video>') {
                                     Write-Verbose ('Using Azure Media Services URL {0}' -f $matches.AzureStreamURL)
                                     $Endpoint= '{0}(format=mpd-time-csf)' -f $matches.AzureStreamURL
                                     $Arg = @( ('-o "{0}"' -f ($vidFullFile -replace '%', '%%')), $Endpoint)
